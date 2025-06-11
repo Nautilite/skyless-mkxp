@@ -10,8 +10,8 @@ on:
     paths-ignore: ['*.md', '*.json', '*.png']
 
 jobs:
-  build-windows:
-    name: Windows
+  build-windows-mingw64:
+    name: Windows-mingw64
     runs-on: windows-latest
     steps:
       - uses: benjlevesque/short-sha@v2.2
@@ -75,6 +75,76 @@ jobs:
         with:
           name: mkxp-z.windows.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
           path: build/artifact
+
+  build-windows-ucrt:
+    name: Windows-UCRT
+    runs-on: windows-latest
+    steps:
+      - uses: benjlevesque/short-sha@v2.2
+        id: short-sha
+        with:
+          length: 7
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: ucrt64
+          install: >-
+            base-devel
+            git
+            ruby
+            vim
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-meson
+            mingw-w64-ucrt-x86_64-autotools
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-egl-headers
+            mingw-w64-ucrt-x86_64-gles-headers
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            windows/build-ucrt
+            windows/downloads
+          key: win-ucrt-${{ hashFiles('windows/Makefile') }}
+
+      - name: Build all dependencies
+        shell: msys2 {0}
+        run: |
+          cd windows
+          make
+
+      - name: Build exe
+        shell: msys2 {0}
+        run: |
+          source windows/vars.sh
+          meson setup build
+          cd build
+          ninja
+          strip ./mkxp-z.exe
+
+      - name: Prepare archive
+        shell: msys2 {0}
+        run: |
+          mkdir build/artifact
+          cd build/artifact
+          cp /mingw64/bin/zlib1.dll .
+          cp ../../windows/build-ucrt/bin/x64-msvcrt-ruby310.dll .
+          cp -r ../../windows/build-ucrt/lib/ruby/3.1.0 .
+          mv ./3.1.0 ./stdlib
+          cp ../mkxp-z.exe .
+          cp ../../mkxp.json .
+          cp -r ../../scripts .
+          cp ../../assets/LICENSE.mkxp-z-with-https.txt .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mkxp-z.windows.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
+          path: build/artifact
+
 
   build-linux-native:
     name: Ubuntu 22.04 x86_64
