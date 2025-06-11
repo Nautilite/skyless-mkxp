@@ -15,7 +15,7 @@ SDL_FLAGS := ${SDL_FLAGS}
 SDL2_IMAGE_FLAGS := ${SDL2_IMAGE_FLAGS}
 SDL2_TTF_FLAGS := ${SDL2_TTF_FLAGS}
 OPENAL_FLAGS := ${OPENAL_FLAGS}
-OPENSSL_FLAGS := $(ARCH) ${OPENSSL_FLAGS}
+OPENSSL_FLAGS := mingw64 ${OPENSSL_FLAGS}
 RUBY_FLAGS := ${RUBY_FLAGS}
 
 BUILD_PREFIX := ${PWD}/build-$(ARCH)
@@ -48,12 +48,12 @@ CMAKE_ARGS := \
 
 RUBY_CONFIGURE_ARGS := \
 	--prefix="$(shell cygpath -m ${BUILD_PREFIX})" \
-	--enable-install-static-library \
-	--disable-install-doc \
+	--without-gmp \
+	--disable-install-doc 
+#	--enable-install-static-library \
 	--with-out-ext=openssl,readline,dbm,gdbm,win32ole \
 	--with-static-linked-ext \
 	--disable-rubygems \
-	--without-gmp
 
 CONFIGURE := $(CONFIGURE_ENV) ./configure $(CONFIGURE_ARGS)
 AUTOGEN   := $(CONFIGURE_ENV) ./autogen.sh $(CONFIGURE_ARGS)
