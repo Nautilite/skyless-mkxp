@@ -87,7 +87,7 @@ jobs:
 
       - uses: msys2/setup-msys2@v2
         with:
-          msystem: ucrt64
+          msystem: UCRT64
           install: >-
             base-devel
             git
@@ -107,7 +107,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: |
-            windows/build-ucrt
+            windows/build-ucrt64
             windows/downloads
           key: win-ucrt-${{ hashFiles('windows/Makefile') }}
 
@@ -129,11 +129,11 @@ jobs:
       - name: Prepare archive
         shell: msys2 {0}
         run: |
-          mkdir build/artifact
-          cd build/artifact
-          cp /mingw64/bin/zlib1.dll .
-          cp ../../windows/build-ucrt/bin/x64-msvcrt-ruby310.dll .
-          cp -r ../../windows/build-ucrt/lib/ruby/3.1.0 .
+          mkdir build/out
+          cd build/out/
+          cp /ucrt64/bin/zlib1.dll .
+          cp ../../windows/build-ucrt64/bin/x64-ucrt-ruby310.dll .
+          cp -r ../../windows/build-ucrt64/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
           cp ../mkxp-z.exe .
           cp ../../mkxp.json .
@@ -143,8 +143,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: mkxp-z.windows.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
-          path: build/artifact
-
+          path: |
+            build/out
 
   build-linux-native:
     name: Ubuntu 22.04 x86_64
