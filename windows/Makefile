@@ -1,4 +1,4 @@
-ARCH := $(shell ruby -e "puts (\`gcc -dumpmachine\`[/i686/].nil?) ? 'mingw64' : 'mingw'")
+ARCH := $(shell ruby -e "puts ENV[\"MSYSTEM\"].downcase")
 RB_PREFIX := $(shell ruby -e "case '$(ARCH)'; \
                 when 'mingw64'; \
                   puts 'x64-msvcrt'; \
