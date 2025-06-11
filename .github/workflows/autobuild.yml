@@ -10,77 +10,75 @@ on:
     paths-ignore: ['*.md', '*.json', '*.png']
 
 jobs:
-  build-windows:
-    name: Windows (${{ matrix.sys }})
+  build-windows-ucrt:
+    name: Windows-UCRT
     runs-on: windows-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - { sys: mingw32, env: i686, ruby-prefix: msvcrt }
-        - { sys: mingw64, env: x86_64, ruby-prefix: x64-msvcrt }
-        - { sys: ucrt64, env: ucrt-x86_64, ruby-prefix: x64-ucrt }
-
     steps:
-      - name: Shorten commit SHA
-        id: shorten-sha
-        uses: benjlevesque/short-sha@v3.0
+      - uses: benjlevesque/short-sha@v2.2
+        id: short-sha
         with:
           length: 7
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          install: >-
+            base-devel
+            git
+            ruby
+            vim
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-meson
+            mingw-w64-ucrt-x86_64-autotools
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-egl-headers
+            mingw-w64-ucrt-x86_64-gles-headers
 
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup MSYS2 (${{ matrix.sys }})
-        uses: msys2/setup-msys2@v2
+      - uses: actions/cache@v4
         with:
-          msystem: ${{ matrix.sys }}
-          install: >-
-            base-devel
-            git
-            vim
-            ruby
-            mingw-w64-${{ matrix.env }}-gcc
-            mingw-w64-${{ matrix.env }}-autotools
-            mingw-w64-${{ matrix.env }}-cmake
-            mingw-w64-${{ matrix.env }}-meson
+          path: |
+            windows/build-ucrt64
+            windows/downloads
+          key: win-ucrt-${{ hashFiles('windows/Makefile') }}
 
-      - name: Dependencies cache
-        id: cache-deps
-        uses: actions/cache@v4
-        with:
-          path: windows/build-${{ matrix.sys }}
-          key: windows-${{ matrix.sys }}-${{ hashFiles('windows/Makefile') }}
-
-      - name: Build dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        working-directory: ${{ github.workspace }}/windows
+      - name: Build all dependencies
         shell: msys2 {0}
-        run: make LTO=0
+        run: |
+          cd windows
+          make
 
-      - name: Build ModShot
+      - name: Build exe
         shell: msys2 {0}
         run: |
           source windows/vars.sh
-          meson setup build --prefix="$GITHUB_WORKSPACE/build/artifact"
-          meson compile -Cbuild
-          meson install -Cbuild
+          meson setup build
+          cd build
+          ninja
+          strip ./mkxp-z.exe
 
-      - name: Prepare artifact
-        working-directory: ${{ github.workspace }}/build/artifact
+      - name: Prepare archive
         shell: msys2 {0}
         run: |
-          strip ./*.exe
-          strip ./*.dll
-          strip ./rubylib/3.1.0/*/*.so
+          mkdir build/out
+          cd build/out/
+          cp /ucrt64/bin/zlib1.dll .
+          cp ../../windows/build-ucrt64/bin/x64-ucrt-ruby310.dll .
+          cp -r ../../windows/build-ucrt64/lib/ruby/3.1.0 .
+          mv ./3.1.0 ./stdlib
+          cp ../mkxp-z.exe .
+          cp ../../mkxp.json .
+          cp -r ../../scripts .
+          cp ../../assets/LICENSE.mkxp-z-with-https.txt .
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: MKXP-Z_Windows_${{ matrix.sys }}_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
-          path: build/artifact
-
+          name: mkxp-z.windows.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
+          path: |
+            build/out
 
   build-linux-native:
     name: Ubuntu 22.04 x86_64
@@ -132,6 +130,7 @@ jobs:
         with:
           name: mkxp-z.linux.ubuntu.22.04.x86_64.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
           path: build/local
+
 
   build-macos:
     name: macOS
