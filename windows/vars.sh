@@ -1,34 +1,12 @@
-if [[ "${BASH_SOURCE-}" = "$0" ]]; then
-  echo "You must 'source' this script: source $0" >&2
-  exit 1
-fi
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if [[ "$MKXPZ_PREFIX" ]]; then
-  echo "Already done" >&2
-  return
-fi
+MKXPZ_HOST=$(gcc -dumpmachine)
+MKXPZ_PREFIX=$(ruby -e "puts ENV[\"MSYSTEM\"].downcase")
+export LDFLAGS="-L$DIR/build-${MKXPZ_PREFIX}/lib -L$DIR/build-${MKXPZ_PREFIX}/bin"
+export CFLAGS="-I$DIR/build-${MKXPZ_PREFIX}/include"
+export PATH="$DIR/build-${MKXPZ_PREFIX}/bin:$PATH"
+MKXPZ_OLD_PC=$(pkg-config --variable pc_path pkg-config)
 
-MKXPZ_ENVDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-MKXPZ_MSYSTEM="$(echo $MSYSTEM | tr '[:upper:]' '[:lower:]')"
-
-# Export environment variables for build stuff
-export MKXPZ_PREFIX="${MKXPZ_ENVDIR}/build-${MKXPZ_MSYSTEM}"
-export PATH="${MKXPZ_PREFIX}/bin:${PATH}"
-export PKG_CONFIG_PATH="${MKXPZ_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-export CMAKE_PREFIX_PATH="${MKXPZ_PREFIX}:${CMAKE_PREFIX_PATH}"
-
-# Get Ruby library prefix, depending on MSYSTEM environment
-export MKXPZ_RUBY_PREFIX=""
-if [[ $MKXPZ_MSYSTEM = "mingw64" ]]; then
-    MKXPZ_RUBY_PREFIX="x64-msvcrt"
-elif [[ $MKXPZ_MSYSTEM = "mingw32" ]]; then
-    MKXPZ_RUBY_PREFIX="msvcrt"
-elif [[ $MKXPZ_MSYSTEM = "ucrt64" ]]; then
-    MKXPZ_RUBY_PREFIX="x64-ucrt"
-elif [[ $MKXPZ_MSYSTEM = "clang64" ]]; then
-    MKXPZ_RUBY_PREFIX="x64-ucrt"
-elif [[ $MKXPZ_MSYSTEM = "clang32" ]]; then
-    MKXPZ_RUBY_PREFIX="ucrt"
-elif [[ $MKXPZ_MSYSTEM = "clangarm64" ]]; then
-    MKXPZ_RUBY_PREFIX="x64-ucrt"
-fi
+# Try to load the stuff we built first
+export PKG_CONFIG_PATH="$DIR/build-${MKXPZ_PREFIX}/lib/pkgconfig"
+export MKXPZ_PREFIX="$DIR/build-${MKXPZ_PREFIX}"
