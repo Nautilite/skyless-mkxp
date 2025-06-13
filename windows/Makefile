@@ -1,6 +1,15 @@
-ARCH := $(shell ruby -e "puts (\`gcc -dumpmachine\`[/i686/].nil?) ? 'mingw64' : 'mingw'")
-RB_PREFIX := $(shell ruby -e "puts ('$(ARCH)' == 'mingw64') ? 'x64-msvcrt' : 'msvcrt'")
-
+ARCH := $(shell ruby -e "puts ENV[\"MSYSTEM\"].downcase")
+RB_PREFIX := $(shell ruby -e "case '$(ARCH)'; \
+                when 'mingw64'; \
+                  puts 'x64-msvcrt'; \
+                when 'mingw32'; \
+                  puts 'msvcrt'; \
+                when 'ucrt64', 'clang64'; \
+                  puts 'x64-ucrt'; \
+                when 'clang32'; \
+                  puts 'ucrt'; \
+                end \
+              ")
 SDL_FLAGS := ${SDL_FLAGS}
 SDL2_IMAGE_FLAGS := ${SDL2_IMAGE_FLAGS}
 SDL2_TTF_FLAGS := ${SDL2_TTF_FLAGS}
@@ -38,12 +47,12 @@ CMAKE_ARGS := \
 
 RUBY_CONFIGURE_ARGS := \
 	--prefix="$(shell cygpath -m ${BUILD_PREFIX})" \
-	--enable-install-static-library \
+	--without-gmp \
 	--disable-install-doc \
+	# --enable-install-static-library \
 	--with-out-ext=openssl,readline,dbm,gdbm,win32ole \
 	--with-static-linked-ext \
 	--disable-rubygems \
-	--without-gmp
 
 CONFIGURE := $(CONFIGURE_ENV) ./configure $(CONFIGURE_ARGS)
 AUTOGEN   := $(CONFIGURE_ENV) ./autogen.sh $(CONFIGURE_ARGS)
