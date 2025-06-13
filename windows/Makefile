@@ -1,15 +1,6 @@
-ARCH := $(shell ruby -e "puts ENV[\"MSYSTEM\"].downcase")
-RB_PREFIX := $(shell ruby -e "case '$(ARCH)'; \
-                when 'mingw64'; \
-                  puts 'x64-msvcrt'; \
-                when 'mingw32'; \
-                  puts 'msvcrt'; \
-                when 'ucrt64', 'clang64'; \
-                  puts 'x64-ucrt'; \
-                when 'clang32'; \
-                  puts 'ucrt'; \
-                end \
-              ")
+ARCH := $(shell ruby -e "puts (\`gcc -dumpmachine\`[/i686/].nil?) ? 'mingw64' : 'mingw'")
+RB_PREFIX := $(shell ruby -e "puts ('$(ARCH)' == 'mingw64') ? 'x64-msvcrt' : 'msvcrt'")
+
 SDL_FLAGS := ${SDL_FLAGS}
 SDL2_IMAGE_FLAGS := ${SDL2_IMAGE_FLAGS}
 SDL2_TTF_FLAGS := ${SDL2_TTF_FLAGS}
