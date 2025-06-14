@@ -40,10 +40,10 @@ RUBY_CONFIGURE_ARGS := \
 	--prefix="$(shell cygpath -m ${BUILD_PREFIX})" \
 	--without-gmp \
 	--disable-install-doc \
-	--enable-install-static-library \
 	--with-out-ext=openssl,readline,dbm,gdbm,win32ole \
+	# --disable-rubygems \
 	--with-static-linked-ext \
-	--disable-rubygems \
+	--enable-install-static-library \
 
 CONFIGURE := $(CONFIGURE_ENV) ./configure $(CONFIGURE_ARGS)
 AUTOGEN   := $(CONFIGURE_ENV) ./autogen.sh $(CONFIGURE_ARGS)
