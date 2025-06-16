@@ -61,7 +61,14 @@ struct SoundEmitter
 	void stop();
 
 	float getVolume() const { return volumeRatio * 100; }
-	void setVolume(float value) { volumeRatio = clamp<float>(value / 100.0f, 0.0f, 1.0f); }
+	void setVolume(float value) { volumeRatio = std::clamp(value / 100.0f, 0.0f, 1.0f); }
+
+private:
+	static float clamp(float value, float min, float max)
+	{
+		return std::max(min, std::min(value, max));
+	}
+}
 
 private:
 	SoundBuffer *allocateBuffer(const std::string &filename);

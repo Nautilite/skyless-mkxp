@@ -77,8 +77,7 @@ struct AudioPrivate
 	      me(ALStream::NotLooped, "me"),
 	      se(rtData.config),
 	      syncPoint(rtData.syncPoint),
-          volumeRatio(1),
-          seVolume(100.0f)
+          volumeRatio(1)
 	{
         for (int i = 0; i < rtData.config.BGM.trackCount; i++) {
             std::string id = std::string("bgm" + std::to_string(i));
