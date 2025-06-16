@@ -47,7 +47,7 @@ struct AudioPrivate
     
     float volumeRatio;
 
-    float getSEVolume() const { return se.getVolume(AudioStream::Base) * 100; }
+    float getSEVolume() { return se.getVolume(AudioStream::Base) * 100; }
     void setSEVolume(float value) { se.setVolume(AudioStream::Base, value / 100.0f); }
 
 	/* The 'MeWatch' is responsible for detecting
