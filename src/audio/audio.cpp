@@ -48,8 +48,8 @@ struct AudioPrivate
     
     float volumeRatio;
 
-    float getSEVolume() const { return seVolume; }
-    void setSEVolume(float value) { seVolume = value; }
+    float getSEVolume() const { return se.getVolume(); }
+    void setSEVolume(float value) { se.setVolume(value); }
 
 	/* The 'MeWatch' is responsible for detecting
 	 * a playing ME, quickly fading out the BGM and
@@ -63,8 +63,6 @@ struct AudioPrivate
 		MePlaying,
 		BgmFadingIn
 	};
-
-    float seVolume = 100.0f;  // SE volume (0-100)
 
 
 	struct
@@ -409,15 +407,12 @@ void Audio::sePlay(const char *filename,
     float seVolume = p->getSEVolume() / 100.0f;
     int combinedVolume = static_cast<int>(volume * seVolume);
     
-    p->se.play(filename, combinedVolume, pitch, 0);
+    p->se.play(filename, combinedVolume, pitch);
 }
 
 void Audio::seStop()
 {
     p->se.stop();
-    p->se.lockStream();
-    p->se.stream.close();
-    p->se.unlockStream();
 }
 
 int Audio::seGetVolume()

@@ -93,7 +93,8 @@ SoundEmitter::SoundEmitter(const Config &conf)
       srcCount(conf.SE.sourceCount),
       alSrcs(srcCount),
       atchBufs(srcCount),
-      srcPrio(srcCount)
+      srcPrio(srcCount),
+      volumeRatio(1.0f)  // Default volume ratio is 1.0 (100%)
 {
 	for (size_t i = 0; i < srcCount; ++i)
 	{

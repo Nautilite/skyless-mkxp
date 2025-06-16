@@ -49,6 +49,8 @@ struct SoundEmitter
 	/* Indices of sources, sorted by priority (lowest first) */
 	std::vector<size_t> srcPrio;
 
+	float volumeRatio;  // Global volume ratio (0.0-1.0)
+
 	SoundEmitter(const Config &conf);
 	~SoundEmitter();
 
@@ -57,6 +59,9 @@ struct SoundEmitter
 	          int pitch);
 
 	void stop();
+
+	float getVolume() const { return volumeRatio * 100; }
+	void setVolume(float value) { volumeRatio = clamp<float>(value / 100.0f, 0.0f, 1.0f); }
 
 private:
 	SoundBuffer *allocateBuffer(const std::string &filename);
