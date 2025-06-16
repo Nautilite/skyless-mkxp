@@ -25,6 +25,7 @@
 #include "intrulist.h"
 #include "al-util.h"
 #include "boost-hash.h"
+#include "util.h"
 
 #include <string>
 #include <vector>
@@ -61,7 +62,7 @@ struct SoundEmitter
 	void stop();
 
 	float getVolume() const { return volumeRatio * 100; }
-	void setVolume(float value) { volumeRatio = clamp(value / 100.0f, 0.0f, 1.0f); }
+	void setVolume(float value) { volumeRatio = value / 100.0f; }
 
 private:
 	SoundBuffer *allocateBuffer(const std::string &filename);
