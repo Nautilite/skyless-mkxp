@@ -41,14 +41,15 @@ struct AudioPrivate
     std::vector<AudioStream*> bgmTracks;
 	AudioStream bgs;
 	AudioStream me;
-	AudioStream se;
+
+	SoundEmitter se;
 
 	SyncPoint &syncPoint;
     
     float volumeRatio;
 
-    float getSEVolume() { return se.getVolume(AudioStream::Base) * 100; }
-    void setSEVolume(float value) { se.setVolume(AudioStream::Base, value / 100.0f); }
+    float getSEVolume() const { return seVolume; }
+    void setSEVolume(float value) { seVolume = value; }
 
 	/* The 'MeWatch' is responsible for detecting
 	 * a playing ME, quickly fading out the BGM and
@@ -63,6 +64,9 @@ struct AudioPrivate
 		BgmFadingIn
 	};
 
+    float seVolume = 100.0f;  // SE volume (0-100)
+
+
 	struct
 	{
 		SDL_Thread *thread;
@@ -73,9 +77,10 @@ struct AudioPrivate
 	AudioPrivate(RGSSThreadData &rtData)
 	    : bgs(ALStream::Looped, "bgs"),
 	      me(ALStream::NotLooped, "me"),
-	      se(ALStream::NotLooped, "se"),
+	      se(rtData.config),
 	      syncPoint(rtData.syncPoint),
-          volumeRatio(1)
+          volumeRatio(1),
+          seVolume(100.0f)
 	{
         for (int i = 0; i < rtData.config.BGM.trackCount; i++) {
             std::string id = std::string("bgm" + std::to_string(i));
@@ -400,7 +405,11 @@ void Audio::sePlay(const char *filename,
                    int volume,
                    int pitch)
 {
-    p->se.play(filename, volume, pitch, 0);
+    // Combine SE volume with requested volume
+    float seVolume = p->getSEVolume() / 100.0f;
+    int combinedVolume = static_cast<int>(volume * seVolume);
+    
+    p->se.play(filename, combinedVolume, pitch, 0);
 }
 
 void Audio::seStop()
