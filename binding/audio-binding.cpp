@@ -220,8 +220,8 @@ audioBindingInit()
 	VALUE module = rb_define_module("Audio");
 
 	BIND_PLAY_STOP_FADE( bgm );
-    _rb_define_module_function(module, "bgmVolume", audio_bgmGetVolume);
-    _rb_define_module_function(module, "bgmVolume=", audio_bgmSetVolume);
+    _rb_define_module_function(module, "bgm_volume", audio_bgmGetVolume);
+    _rb_define_module_function(module, "bgm_volume=", audio_bgmSetVolume);
 	BIND_PLAY_STOP_FADE( bgs );
 	BIND_PLAY_STOP_FADE( me  );
 
@@ -231,8 +231,8 @@ audioBindingInit()
 	_rb_define_module_function(module, "setup_midi", audioSetupMidi);
 
 	BIND_PLAY_STOP( se )
-    _rb_define_module_function(module, "seVolume", audio_seGetVolume);
-    _rb_define_module_function(module, "seVolume=", audio_seSetVolume);
+    _rb_define_module_function(module, "se_volume", audio_seGetVolume);
+    _rb_define_module_function(module, "se_volume=", audio_seSetVolume);
 
 	_rb_define_module_function(module, "__reset__", audioReset);
 }
