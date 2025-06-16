@@ -41,8 +41,7 @@ struct AudioPrivate
     std::vector<AudioStream*> bgmTracks;
 	AudioStream bgs;
 	AudioStream me;
-
-	SoundEmitter se;
+	AudioStream se;
 
 	SyncPoint &syncPoint;
     
@@ -74,7 +73,7 @@ struct AudioPrivate
 	AudioPrivate(RGSSThreadData &rtData)
 	    : bgs(ALStream::Looped, "bgs"),
 	      me(ALStream::NotLooped, "me"),
-	      se(rtData.config),
+	      se(ALStream::NotLooped, "se"),
 	      syncPoint(rtData.syncPoint),
           volumeRatio(1)
 	{
@@ -393,7 +392,7 @@ void Audio::meStop()
 
 void Audio::meFade(int time)
 {
-	p->me.fadeOut(time);
+    p->me.fadeOut(time);
 }
 
 
@@ -401,12 +400,15 @@ void Audio::sePlay(const char *filename,
                    int volume,
                    int pitch)
 {
-	p->se.play(filename, volume, pitch);
+    p->se.play(filename, volume, pitch, 0);
 }
 
 void Audio::seStop()
 {
-	p->se.stop();
+    p->se.stop();
+    p->se.lockStream();
+    p->se.stream.close();
+    p->se.unlockStream();
 }
 
 int Audio::seGetVolume()
