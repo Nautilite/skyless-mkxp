@@ -65,6 +65,8 @@ public:
 	            int volume = 100,
 	            int pitch = 100);
 	void seStop();
+    int seGetVolume();
+    void seSetVolume(int volume);
 
 	void setupMidi();
 	double bgmPos(int track = 0);

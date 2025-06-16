@@ -142,6 +142,24 @@ RB_METHOD_GUARD(audio_bgmSetVolume)
 }
 RB_METHOD_GUARD_END
 
+RB_METHOD_GUARD(audio_seGetVolume)
+{
+    RB_UNUSED_PARAM;
+    int ret = shState->audio().seGetVolume();
+    return rb_fix_new(ret);
+}
+RB_METHOD_GUARD_END
+
+RB_METHOD_GUARD(audio_seSetVolume)
+{
+    RB_UNUSED_PARAM;
+    int volume;
+    rb_get_args(argc, argv, "i", &volume RB_ARG_END);
+    shState->audio().seSetVolume(volume);
+    return Qnil;
+}
+RB_METHOD_GUARD_END
+
 DEF_PLAY_STOP_POS( bgs )
 
 DEF_PLAY_STOP( me )
@@ -202,8 +220,8 @@ audioBindingInit()
 	VALUE module = rb_define_module("Audio");
 
 	BIND_PLAY_STOP_FADE( bgm );
-    _rb_define_module_function(module, "bgm_volume", audio_bgmGetVolume);
-    _rb_define_module_function(module, "bgm_set_volume", audio_bgmSetVolume);
+    _rb_define_module_function(module, "bgmVolume", audio_bgmGetVolume);
+    _rb_define_module_function(module, "bgmVolume=", audio_bgmSetVolume);
 	BIND_PLAY_STOP_FADE( bgs );
 	BIND_PLAY_STOP_FADE( me  );
 
@@ -213,6 +231,8 @@ audioBindingInit()
 	_rb_define_module_function(module, "setup_midi", audioSetupMidi);
 
 	BIND_PLAY_STOP( se )
+    _rb_define_module_function(module, "seVolume", audio_seGetVolume);
+    _rb_define_module_function(module, "seVolume=", audio_seSetVolume);
 
 	_rb_define_module_function(module, "__reset__", audioReset);
 }

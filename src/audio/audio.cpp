@@ -48,6 +48,9 @@ struct AudioPrivate
     
     float volumeRatio;
 
+    float getSEVolume() const { return se.getVolume(AudioStream::Base) * 100; }
+    void setSEVolume(float value) { se.setVolume(AudioStream::Base, value / 100.0f); }
+
 	/* The 'MeWatch' is responsible for detecting
 	 * a playing ME, quickly fading out the BGM and
 	 * keeping it paused/stopped while the ME plays,
@@ -347,6 +350,10 @@ void Audio::bgmSetVolume(int volume, int track)
         for (auto track : p->bgmTracks)
             track->setVolume(AudioStream::BaseRatio, vol);
         
+        // Also set BGS and ME volumes to match BGM
+        p->bgs.setVolume(AudioStream::Base, vol);
+        p->me.setVolume(AudioStream::Base, vol);
+        
         return;
     }
     p->getTrackByIndex(track)->setVolume(AudioStream::Base, vol);
@@ -400,6 +407,16 @@ void Audio::sePlay(const char *filename,
 void Audio::seStop()
 {
 	p->se.stop();
+}
+
+int Audio::seGetVolume()
+{
+    return p->getSEVolume();
+}
+
+void Audio::seSetVolume(int volume)
+{
+    p->setSEVolume(volume);
 }
 
 void Audio::setupMidi()
