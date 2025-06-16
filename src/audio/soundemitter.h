@@ -25,9 +25,19 @@
 #include "intrulist.h"
 #include "al-util.h"
 #include "boost-hash.h"
+#include "sharedstate.h"
+#include "filesystem.h"
+#include "exception.h"
+#include "config.h"
+#include "util.h"
+#include "debugwriter.h"
 
 #include <string>
 #include <vector>
+#include <SDL_sound.h>
+#include <algorithm>
+
+#define SE_CACHE_MEM (10*1024*1024)
 
 struct SoundBuffer;
 struct Config;
@@ -61,16 +71,14 @@ struct SoundEmitter
 	void stop();
 
 	float getVolume() const { return volumeRatio * 100; }
-	void setVolume(float value) { volumeRatio = std::clamp(value / 100.0f, 0.0f, 1.0f); }
+	void setVolume(float value) { volumeRatio = clamp(value / 100.0f, 0.0f, 1.0f); }
 
 private:
 	static float clamp(float value, float min, float max)
 	{
 		return std::max(min, std::min(value, max));
 	}
-}
 
-private:
 	SoundBuffer *allocateBuffer(const std::string &filename);
 };
 
