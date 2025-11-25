@@ -4,7 +4,7 @@
 # License GPLv2+.
 # Test images are from https://github.com/xinntao/Real-ESRGAN/
 #
-# Run the suite via the "customScript" field in mkxp.json.
+# Run the suite via the "customScript" field in mkxp.jsonc.
 # Use RGSS v3 for best results.
 
 def dump2(bmp, spr, desc)

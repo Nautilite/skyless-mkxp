@@ -2,7 +2,7 @@
 # Copyright 2023-2024 Splendide Imaginarius.
 # License GPLv2+.
 #
-# Run the suite via the "customScript" field in mkxp.json.
+# Run the suite via the "customScript" field in mkxp.jsonc.
 
 def dump(bmp, spr, desc)
 	spr.bitmap = bmp

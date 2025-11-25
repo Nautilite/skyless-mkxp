@@ -121,7 +121,7 @@ json::value readConfFile(const char *path) {
     return ret;
 }
 
-#define CONF_FILE "System/mkxp.json"
+#define CONF_FILE "System/mkxp.jsonc"
 
 Config::Config() {}
 

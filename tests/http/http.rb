@@ -2,7 +2,7 @@
 # Copyright 2023 Splendide Imaginarius (based on Struma's docs).
 # License GPLv2+.
 #
-# Run the suite via the "customScript" field in mkxp.json.
+# Run the suite via the "customScript" field in mkxp.jsonc.
 # Use RGSS v3 for best results.
 
 System::puts "\nGET HTTP"

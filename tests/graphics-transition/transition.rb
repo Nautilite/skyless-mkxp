@@ -1,5 +1,5 @@
 # Test script for mkxp-z Graphics.transition reported FPS bug fix.
-# Run via the "customScript" field in mkxp.json.
+# Run via the "customScript" field in mkxp.jsonc.
 
 puts 'No transition. Counter should be normal'
 normal_duration = 2
