@@ -4,10 +4,10 @@ name: Automatic Build
 on:
   push:
     branches: ['dev', 'autobuild']
-    paths-ignore: ['*.md', '*.json', '*.png']
+    paths-ignore: ['*.md', '*.jsonc', '*.png']
   pull_request:
     branches: ['dev', 'autobuild']
-    paths-ignore: ['*.md', '*.json', '*.png']
+    paths-ignore: ['*.md', '*.jsonc', '*.png']
 
 jobs:
   build-windows:
@@ -68,7 +68,7 @@ jobs:
           cp -r ../../windows/build-mingw64/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
           cp ../mkxp-z.exe .
-          cp ../../mkxp.json .
+          cp ../../mkxp.jsonc .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
 
@@ -119,7 +119,7 @@ jobs:
           cd build/local
           cp -r ../../linux/build-x86_64/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
-          cp ../../mkxp.json .
+          cp ../../mkxp.jsonc .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
 
@@ -224,7 +224,7 @@ jobs:
           cd build/local
           cp -r ../../linux/build-${{matrix.arch_mkxpz}}/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
-          cp ../../mkxp.json .
+          cp ../../mkxp.jsonc .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
 
@@ -279,7 +279,7 @@ jobs:
           cd build/local
           cp -r ../../linux/build-x86_64/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
-          cp ../../mkxp.json .
+          cp ../../mkxp.jsonc .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
 
@@ -380,7 +380,7 @@ jobs:
           cd build/local
           cp -r ../../linux/build-${{matrix.arch_mkxpz}}/lib/ruby/3.1.0 .
           mv ./3.1.0 ./stdlib
-          cp ../../mkxp.json .
+          cp ../../mkxp.jsonc .
           cp -r ../../scripts .
           cp ../../assets/LICENSE.mkxp-z-with-https.txt .
 
