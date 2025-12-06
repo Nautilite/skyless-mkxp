@@ -170,7 +170,7 @@ void Config::read(int argc, char *argv[]) {
         {"integerScalingLastMile", true},
         {"maxTextureSize", 0},
         {"gameFolder", ""},
-        {"rgssScripts", "xScripts.rvdata2"},
+        {"rgssScripts", "Data/xScripts.rvdata2"},
         {"anyAltToggleFS", false},
         {"enableReset", true},
         {"enableSettings", true},
