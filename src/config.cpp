@@ -170,7 +170,7 @@ void Config::read(int argc, char *argv[]) {
         {"integerScalingLastMile", true},
         {"maxTextureSize", 0},
         {"gameFolder", ""},
-        {"rgss_scripts", "xScripts.rvdata2"},
+        {"rgssScripts", "xScripts.rvdata2"},
         {"anyAltToggleFS", false},
         {"enableReset", true},
         {"enableSettings", true},
@@ -240,7 +240,7 @@ try { exp } catch (...) {}
 #define SET_STRINGOPT(var, key) GUARD(var = std::string(opts[#key].as_string());)
     
     SET_STRINGOPT(gameFolder, gameFolder);
-    SET_STRINGOPT(game.scripts, rgss_scripts);
+    SET_STRINGOPT(rgssScripts, rgssScripts);
     SET_STRINGOPT(dataPathOrg, dataPathOrg);
     SET_STRINGOPT(dataPathApp, dataPathApp);
     SET_STRINGOPT(iconPath, iconPath);
