@@ -78,6 +78,7 @@ struct Config {
     } integerScaling;
     
     std::string gameFolder;
+    std::string rgssScripts;
     bool manualFolderSelect;
     
     bool anyAltToggleFS;

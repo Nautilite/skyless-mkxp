@@ -945,7 +945,7 @@ bool evalScript(VALUE string, const char *filename)
 
 static void runRMXPScripts(BacktraceData &btData) {
     const Config &conf = shState->rtData().config;
-    const std::string &scriptPack = conf.game.scripts;
+    const std::string &scriptPack = conf.rgssScripts;
     
     if (scriptPack.empty()) {
         showMsg("No script file has been specified. Check the game's INI and try again.");
