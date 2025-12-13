@@ -545,3 +545,4 @@ static SDL_GLContext initGL(SDL_Window *win, Config &conf,
   // GLDebugLogger dLogger;
   return glCtx;
 }
+
